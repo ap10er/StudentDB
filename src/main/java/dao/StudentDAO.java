@@ -1,6 +1,5 @@
 package dao;
 
-import model.Group;
 import model.Student;
 
 import java.sql.*;
@@ -12,9 +11,9 @@ public class StudentDAO {
     private static final String USER = "ap10er";
     private static final String PASSWORD = "sasawa1212";
 
-    public List<Student> getStudentsByGroupId(Long groupId) {
+    public List<Student> getAllStudentsByGroupId(Long groupId) {
         List<Student> students = new ArrayList<>();
-        String sql = "SELECT * FROM `Students` WHERE group_id = ?"; // Используем обратные кавычки
+        String sql = "SELECT * FROM `Students` WHERE group_id = ?";
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, groupId);
@@ -36,7 +35,7 @@ public class StudentDAO {
     }
 
     public void addStudent(Student student) {
-        String sql = "INSERT INTO students (id, first_name, last_name, middle_name, birth_date, group_id) VALUES (?, ?,?,?,?,?)";
+        String sql = "INSERT INTO `Students` (first_name, last_name, middle_name, birth_date, group_id) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, student.getFirstName());
@@ -51,25 +50,26 @@ public class StudentDAO {
     }
 
     public void updateStudent(Student student) {
-        String sql = "UPDATE students SET first_name = ?, last_name = ?, middle_name = ?, birth_date = ?, group_id = ? WHERE id = ?";
+        String sql = "UPDATE `Students` SET first_name = ?, last_name = ?, middle_name = ?, birth_date = ?, group_id = ? WHERE id = ?";
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, student.getFirstName());
             stmt.setString(2, student.getLastName());
             stmt.setString(3, student.getMiddleName());
             stmt.setDate(4, Date.valueOf(student.getBirthDate()));
-            stmt.setLong(3, student.getGroupId());
+            stmt.setLong(5, student.getGroupId());
+            stmt.setLong(6, student.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void deleteStudent(Student id) {
-        String sql = "DELETE FROM students WHERE id = ?";
+    public void deleteStudent(Long id) {
+        String sql = "DELETE FROM `Students` WHERE id = ?";
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setLong(1, id.getId());
+            stmt.setLong(1, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

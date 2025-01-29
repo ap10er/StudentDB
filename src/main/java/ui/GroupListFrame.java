@@ -1,7 +1,7 @@
 package ui;
 
 import dao.GroupDAO;
-import model.Group;
+import dao.StudentDAO;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -29,11 +29,13 @@ public class GroupListFrame extends JFrame {
         JButton addButton = new JButton("Добавить");
         JButton editButton = new JButton("Изменить");
         JButton deleteButton = new JButton("Удалить");
+        JButton viewStudentsButton = new JButton("Просмотреть студентов"); // Новая кнопка
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
+        buttonPanel.add(viewStudentsButton); // Добавляем кнопку
 
         add(new JScrollPane(table), BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
@@ -41,12 +43,13 @@ public class GroupListFrame extends JFrame {
         addButton.addActionListener(e -> addGroup());
         editButton.addActionListener(e -> editGroup());
         deleteButton.addActionListener(e -> deleteGroup());
+        viewStudentsButton.addActionListener(e -> viewStudents()); // Обработчик для новой кнопки
     }
 
     private void loadData() {
         tableModel.setRowCount(0);
-        List<Group> groups = groupDAO.getAllGroups();
-        for (Group group : groups) {
+        List<model.Group> groups = groupDAO.getAllGroups();
+        for (model.Group group : groups) {
             tableModel.addRow(new Object[]{group.getId(), group.getGroupNumber(), group.getFacultyName()});
         }
     }
@@ -55,7 +58,7 @@ public class GroupListFrame extends JFrame {
         AddGroupDialog dialog = new AddGroupDialog(this);
         dialog.setVisible(true);
 
-        Group newGroup = dialog.getGroup();
+        model.Group newGroup = dialog.getGroup();
         if (newGroup != null) {
             groupDAO.addGroup(newGroup);
             loadData();
@@ -73,11 +76,11 @@ public class GroupListFrame extends JFrame {
         String groupNumber = (String) tableModel.getValueAt(selectedRow, 1);
         String facultyName = (String) tableModel.getValueAt(selectedRow, 2);
 
-        Group selectedGroup = new Group(id, groupNumber, facultyName);
+        model.Group selectedGroup = new model.Group(id, groupNumber, facultyName);
         EditGroupDialog dialog = new EditGroupDialog(this, selectedGroup);
         dialog.setVisible(true);
 
-        Group updatedGroup = dialog.getUpdatedGroup(selectedGroup);
+        model.Group updatedGroup = dialog.getUpdatedGroup(selectedGroup);
         if (updatedGroup != null) {
             groupDAO.updateGroup(updatedGroup);
             loadData();
@@ -91,6 +94,17 @@ public class GroupListFrame extends JFrame {
             groupDAO.deleteGroup(id);
             loadData();
         }
+    }
+
+    private void viewStudents() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Выберите группу для просмотра студентов", "Ошибка", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Long groupId = (Long) tableModel.getValueAt(selectedRow, 0);
+        new StudentListFrame(groupId).setVisible(true); // Открываем окно списка студентов
     }
 
     public static void main(String[] args) {
