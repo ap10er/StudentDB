@@ -52,7 +52,14 @@ public class GroupListFrame extends JFrame {
     }
 
     private void addGroup() {
-        // Открытие модального окна для добавления группы
+        AddGroupDialog dialog = new AddGroupDialog(this);
+        dialog.setVisible(true); // Показываем модальное окно
+
+        Group newGroup = dialog.getGroup();
+        if (newGroup != null) {
+            groupDAO.addGroup(newGroup);
+            loadData(); 
+        }
     }
 
     private void editGroup() {
