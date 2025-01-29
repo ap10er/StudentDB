@@ -17,6 +17,9 @@ public class StudentListFrame extends JFrame {
     private StudentDAO studentDAO;
     private Long groupId;
 
+    private JTextField lastNameFilterField; // Поле для фильтрации по фамилии
+    private JTextField groupNumberFilterField; // Поле для фильтрации по номеру группы
+
     public StudentListFrame(Long groupId) {
         this.groupId = groupId;
         studentDAO = new StudentDAO();
@@ -24,13 +27,31 @@ public class StudentListFrame extends JFrame {
         setSize(800, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         initComponents();
-        loadData();
+        loadData(null, null); // Загружаем данные без фильтрации
     }
 
     private void initComponents() {
         tableModel = new DefaultTableModel(new Object[]{"ID", "Имя", "Фамилия", "Отчество", "Дата рождения", "ID группы"}, 0);
         table = new JTable(tableModel);
 
+        // Панель для фильтрации
+        JPanel filterPanel = new JPanel(new GridLayout(2, 2, 5, 5));
+        filterPanel.setBorder(BorderFactory.createTitledBorder("Фильтр"));
+
+        filterPanel.add(new JLabel("Фамилия:"));
+        lastNameFilterField = new JTextField();
+        filterPanel.add(lastNameFilterField);
+
+        filterPanel.add(new JLabel("Номер группы:"));
+        groupNumberFilterField = new JTextField();
+        filterPanel.add(groupNumberFilterField);
+
+        JButton applyFilterButton = new JButton("Применить");
+        filterPanel.add(applyFilterButton);
+
+        add(filterPanel, BorderLayout.NORTH);
+
+        // Кнопки управления
         JButton addButton = new JButton("Добавить");
         JButton editButton = new JButton("Изменить");
         JButton deleteButton = new JButton("Удалить");
@@ -46,11 +67,14 @@ public class StudentListFrame extends JFrame {
         addButton.addActionListener(e -> addStudent());
         editButton.addActionListener(e -> editStudent());
         deleteButton.addActionListener(e -> deleteStudent());
+
+        // Обработчик для кнопки "Применить"
+        applyFilterButton.addActionListener(e -> applyFilters());
     }
 
-    private void loadData() {
+    private void loadData(String lastNameFilter, String groupNumberFilter) {
         tableModel.setRowCount(0);
-        List<Student> students = studentDAO.getAllStudentsByGroupId(groupId);
+        List<Student> students = studentDAO.getFilteredStudents(groupId, lastNameFilter, groupNumberFilter);
         for (Student student : students) {
             tableModel.addRow(new Object[]{
                     student.getId(),
@@ -63,6 +87,12 @@ public class StudentListFrame extends JFrame {
         }
     }
 
+    private void applyFilters() {
+        String lastNameFilter = lastNameFilterField.getText().trim();
+        String groupNumberFilter = groupNumberFilterField.getText().trim();
+        loadData(lastNameFilter, groupNumberFilter); // Применяем фильтры
+    }
+
     private void addStudent() {
         AddStudentDialog dialog = new AddStudentDialog(this, groupId);
         dialog.setVisible(true);
@@ -70,7 +100,7 @@ public class StudentListFrame extends JFrame {
         Student newStudent = dialog.getStudent();
         if (newStudent != null) {
             studentDAO.addStudent(newStudent);
-            loadData();
+            loadData(null, null); // Обновляем таблицу без фильтрации
         }
     }
 
@@ -95,7 +125,7 @@ public class StudentListFrame extends JFrame {
         Student updatedStudent = dialog.getUpdatedStudent(selectedStudent);
         if (updatedStudent != null) {
             studentDAO.updateStudent(updatedStudent);
-            loadData();
+            loadData(null, null); // Обновляем таблицу без фильтрации
         }
     }
 
@@ -104,7 +134,7 @@ public class StudentListFrame extends JFrame {
         if (selectedRow != -1) {
             Long id = (Long) tableModel.getValueAt(selectedRow, 0);
             studentDAO.deleteStudent(id);
-            loadData();
+            loadData(null, null); // Обновляем таблицу без фильтрации
         }
     }
 }

@@ -75,4 +75,49 @@ public class StudentDAO {
             e.printStackTrace();
         }
     }
+
+    public List<Student> getFilteredStudents(Long groupId, String lastNameFilter, String groupNumberFilter) {
+        List<Student> students = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT s.* FROM `Students` s JOIN `Groups` g ON s.group_id = g.id WHERE 1=1");
+
+        if (groupId != null) {
+            sql.append(" AND s.group_id = ?");
+        }
+        if (lastNameFilter != null && !lastNameFilter.isEmpty()) {
+            sql.append(" AND s.last_name LIKE ?");
+        }
+        if (groupNumberFilter != null && !groupNumberFilter.isEmpty()) {
+            sql.append(" AND g.group_number LIKE ?");
+        }
+
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+
+            int paramIndex = 1;
+            if (groupId != null) {
+                stmt.setLong(paramIndex++, groupId);
+            }
+            if (lastNameFilter != null && !lastNameFilter.isEmpty()) {
+                stmt.setString(paramIndex++, "%" + lastNameFilter + "%");
+            }
+            if (groupNumberFilter != null && !groupNumberFilter.isEmpty()) {
+                stmt.setString(paramIndex++, "%" + groupNumberFilter + "%");
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                students.add(new Student(
+                        rs.getLong("id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("middle_name"),
+                        rs.getDate("birth_date").toLocalDate(),
+                        rs.getLong("group_id")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return students;
+    }
 }

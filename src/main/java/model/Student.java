@@ -22,7 +22,6 @@ public class Student {
         this.groupId = groupId;
     }
 
-    // Геттеры и сеттеры
     public Long getId() {
         return id;
     }
