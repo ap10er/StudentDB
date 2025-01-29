@@ -14,4 +14,3 @@ target/
 
 # Ignore .env file
 .env
-settings.env
