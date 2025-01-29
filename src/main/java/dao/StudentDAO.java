@@ -1,5 +1,6 @@
 package dao;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import model.Student;
 
 import java.sql.*;
@@ -7,9 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StudentDAO {
+    private static final Dotenv dotenv = Dotenv.load();
+
     private static final String URL = "jdbc:mysql://localhost:3333/student_management";
-    private static final String USER = "ap10er";
-    private static final String PASSWORD = "sasawa1212";
+    private static final String USER = dotenv.get("USER");
+    private static final String PASSWORD = dotenv.get("PASSWORD");
 
     public List<Student> getAllStudentsByGroupId(Long groupId) {
         List<Student> students = new ArrayList<>();

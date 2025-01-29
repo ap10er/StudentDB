@@ -1,19 +1,23 @@
 package dao;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import model.Group;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class GroupDAO {
+    private static final Dotenv dotenv = Dotenv.load();
+
     private static final String URL = "jdbc:mysql://localhost:3333/student_management";
-    private static final String USER = "ap10er";
-    private static final String PASSWORD = "sasawa1212";
+    private static final String USER = dotenv.get("DB_USER");
+    private static final String PASSWORD = dotenv.get("DB_PASSWORD");
 
     public List<Group> getAllGroups() {
         List<Group> groups = new ArrayList<>();
-        String sql = "SELECT * FROM `Groups`"; // Используем обратные кавычки
+        String sql = "SELECT * FROM `Groups`";
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
