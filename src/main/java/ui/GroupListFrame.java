@@ -53,17 +53,35 @@ public class GroupListFrame extends JFrame {
 
     private void addGroup() {
         AddGroupDialog dialog = new AddGroupDialog(this);
-        dialog.setVisible(true); // Показываем модальное окно
+        dialog.setVisible(true);
 
         Group newGroup = dialog.getGroup();
         if (newGroup != null) {
             groupDAO.addGroup(newGroup);
-            loadData(); 
+            loadData();
         }
     }
 
     private void editGroup() {
-        // Открытие модального окна для редактирования группы
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Выберите группу для редактирования", "Ошибка", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Long id = (Long) tableModel.getValueAt(selectedRow, 0);
+        String groupNumber = (String) tableModel.getValueAt(selectedRow, 1);
+        String facultyName = (String) tableModel.getValueAt(selectedRow, 2);
+
+        Group selectedGroup = new Group(id, groupNumber, facultyName);
+        EditGroupDialog dialog = new EditGroupDialog(this, selectedGroup);
+        dialog.setVisible(true);
+
+        Group updatedGroup = dialog.getUpdatedGroup(selectedGroup);
+        if (updatedGroup != null) {
+            groupDAO.updateGroup(updatedGroup);
+            loadData();
+        }
     }
 
     private void deleteGroup() {
