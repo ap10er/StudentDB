@@ -4,8 +4,6 @@ import model.Group;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class AddGroupDialog extends JDialog {
     private final JTextField groupNumberField;
@@ -41,20 +39,14 @@ public class AddGroupDialog extends JDialog {
 
         add(buttonPanel, BorderLayout.SOUTH);
 
-        okButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                isConfirmed = true;
-                setVisible(false);
-            }
+        okButton.addActionListener(e -> {
+            isConfirmed = true;
+            setVisible(false);
         });
 
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                isConfirmed = false;
-                setVisible(false);
-            }
+        cancelButton.addActionListener(e -> {
+            isConfirmed = false;
+            setVisible(false);
         });
     }
 

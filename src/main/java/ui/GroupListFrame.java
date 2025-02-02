@@ -8,6 +8,7 @@ import java.awt.*;
 import java.util.List;
 
 public class GroupListFrame extends JFrame {
+
     private JTable table;
     private DefaultTableModel tableModel;
     private final GroupDAO groupDAO;
@@ -16,7 +17,7 @@ public class GroupListFrame extends JFrame {
         groupDAO = new GroupDAO();
         setTitle("Список групп");
         setSize(600, 400);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         initComponents();
         loadData();
     }
@@ -28,13 +29,13 @@ public class GroupListFrame extends JFrame {
         JButton addButton = new JButton("Добавить");
         JButton editButton = new JButton("Изменить");
         JButton deleteButton = new JButton("Удалить");
-        JButton viewStudentsButton = new JButton("Просмотреть студентов"); // Новая кнопка
+        JButton viewStudentsButton = new JButton("Просмотреть студентов");
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
-        buttonPanel.add(viewStudentsButton); // Добавляем кнопку
+        buttonPanel.add(viewStudentsButton);
 
         add(new JScrollPane(table), BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
@@ -42,7 +43,7 @@ public class GroupListFrame extends JFrame {
         addButton.addActionListener(e -> addGroup());
         editButton.addActionListener(e -> editGroup());
         deleteButton.addActionListener(e -> deleteGroup());
-        viewStudentsButton.addActionListener(e -> viewStudents()); // Обработчик для новой кнопки
+        viewStudentsButton.addActionListener(e -> viewStudents());
     }
 
     private void loadData() {
@@ -67,7 +68,8 @@ public class GroupListFrame extends JFrame {
     private void editGroup() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Выберите группу для редактирования", "Ошибка", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Выберите группу для редактирования",
+                    "Ошибка", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -103,7 +105,7 @@ public class GroupListFrame extends JFrame {
         }
 
         Long groupId = (Long) tableModel.getValueAt(selectedRow, 0);
-        new StudentListFrame(groupId).setVisible(true); // Открываем окно списка студентов
+        new StudentListFrame(groupId).setVisible(true);
     }
 
     public static void main(String[] args) {
