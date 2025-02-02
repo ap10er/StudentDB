@@ -7,7 +7,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class GroupDAO {
 
     private static final Dotenv dotenv = Dotenv.load();
@@ -18,7 +17,8 @@ public class GroupDAO {
 
     public List<Group> getAllGroups() {
         List<Group> groups = new ArrayList<>();
-        String sql = "SELECT * FROM `Groups`";
+        String sql = "SELECT * " +
+                " FROM `Groups`";
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -70,4 +70,6 @@ public class GroupDAO {
             e.printStackTrace();
         }
     }
+
+
 }

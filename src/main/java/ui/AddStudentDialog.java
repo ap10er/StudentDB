@@ -4,8 +4,6 @@ import model.Student;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.time.LocalDate;
 
 public class AddStudentDialog extends JDialog {
@@ -45,7 +43,6 @@ public class AddStudentDialog extends JDialog {
 
         add(inputPanel, BorderLayout.CENTER);
 
-
         JPanel buttonPanel = new JPanel();
         JButton okButton = new JButton("ОК");
         JButton cancelButton = new JButton("Отменить");
@@ -56,20 +53,14 @@ public class AddStudentDialog extends JDialog {
         add(buttonPanel, BorderLayout.SOUTH);
 
 
-        okButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                isConfirmed = true;
-                setVisible(false); // Закрываем диалог
-            }
+        okButton.addActionListener(e -> {
+            isConfirmed = true;
+            setVisible(false);
         });
 
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                isConfirmed = false;
-                setVisible(false); // Закрываем диалог
-            }
+        cancelButton.addActionListener(e -> {
+            isConfirmed = false;
+            setVisible(false);
         });
     }
 

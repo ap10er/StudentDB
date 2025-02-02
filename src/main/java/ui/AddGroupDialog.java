@@ -41,20 +41,14 @@ public class AddGroupDialog extends JDialog {
 
         add(buttonPanel, BorderLayout.SOUTH);
 
-        okButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                isConfirmed = true;
-                setVisible(false);
-            }
+        okButton.addActionListener(e -> {
+            isConfirmed = true;
+            setVisible(false);
         });
 
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                isConfirmed = false;
-                setVisible(false);
-            }
+        cancelButton.addActionListener(e -> {
+            isConfirmed = false;
+            setVisible(false);
         });
     }
 

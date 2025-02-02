@@ -6,35 +6,32 @@ import model.Student;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.List;
 
 public class StudentListFrame extends JFrame {
     private JTable table;
     private DefaultTableModel tableModel;
-    private StudentDAO studentDAO;
-    private Long groupId;
+    private final StudentDAO studentDAO;
+    private final Long groupId;
 
-    private JTextField lastNameFilterField; // Поле для фильтрации по фамилии
-    private JTextField groupNumberFilterField; // Поле для фильтрации по номеру группы
+    private JTextField lastNameFilterField;
+    private JTextField groupNumberFilterField;
 
     public StudentListFrame(Long groupId) {
         this.groupId = groupId;
         studentDAO = new StudentDAO();
         setTitle("Список студентов");
         setSize(800, 400);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         initComponents();
-        loadData(null, null); // Загружаем данные без фильтрации
+        loadData(null, null);
     }
 
     private void initComponents() {
         tableModel = new DefaultTableModel(new Object[]{"ID", "Имя", "Фамилия", "Отчество", "Дата рождения", "ID группы"}, 0);
         table = new JTable(tableModel);
 
-        // Панель для фильтрации
         JPanel filterPanel = new JPanel(new GridLayout(2, 2, 5, 5));
         filterPanel.setBorder(BorderFactory.createTitledBorder("Фильтр"));
 
@@ -51,7 +48,6 @@ public class StudentListFrame extends JFrame {
 
         add(filterPanel, BorderLayout.NORTH);
 
-        // Кнопки управления
         JButton addButton = new JButton("Добавить");
         JButton editButton = new JButton("Изменить");
         JButton deleteButton = new JButton("Удалить");
@@ -68,7 +64,6 @@ public class StudentListFrame extends JFrame {
         editButton.addActionListener(e -> editStudent());
         deleteButton.addActionListener(e -> deleteStudent());
 
-        // Обработчик для кнопки "Применить"
         applyFilterButton.addActionListener(e -> applyFilters());
     }
 
@@ -90,7 +85,7 @@ public class StudentListFrame extends JFrame {
     private void applyFilters() {
         String lastNameFilter = lastNameFilterField.getText().trim();
         String groupNumberFilter = groupNumberFilterField.getText().trim();
-        loadData(lastNameFilter, groupNumberFilter); // Применяем фильтры
+        loadData(lastNameFilter, groupNumberFilter);
     }
 
     private void addStudent() {
@@ -100,7 +95,7 @@ public class StudentListFrame extends JFrame {
         Student newStudent = dialog.getStudent();
         if (newStudent != null) {
             studentDAO.addStudent(newStudent);
-            loadData(null, null); // Обновляем таблицу без фильтрации
+            loadData(null, null);
         }
     }
 
@@ -125,7 +120,7 @@ public class StudentListFrame extends JFrame {
         Student updatedStudent = dialog.getUpdatedStudent(selectedStudent);
         if (updatedStudent != null) {
             studentDAO.updateStudent(updatedStudent);
-            loadData(null, null); // Обновляем таблицу без фильтрации
+            loadData(null, null);
         }
     }
 
@@ -134,7 +129,7 @@ public class StudentListFrame extends JFrame {
         if (selectedRow != -1) {
             Long id = (Long) tableModel.getValueAt(selectedRow, 0);
             studentDAO.deleteStudent(id);
-            loadData(null, null); // Обновляем таблицу без фильтрации
+            loadData(null, null);
         }
     }
 }

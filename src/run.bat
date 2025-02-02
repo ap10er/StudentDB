@@ -1,3 +1,3 @@
 @echo off
-java -cp ".;lib/*" Main
+java -cp ".;lib/*" GroupListFrame
 pause

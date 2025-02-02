@@ -16,7 +16,8 @@ public class StudentDAO {
 
     public List<Student> getAllStudentsByGroupId(Long groupId) {
         List<Student> students = new ArrayList<>();
-        String sql = "SELECT * FROM `Students` WHERE group_id = ?";
+        String sql = "SELECT * FROM" +
+                " `Students` WHERE group_id = ?";
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, groupId);
